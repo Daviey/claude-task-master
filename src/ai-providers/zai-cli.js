@@ -23,7 +23,7 @@ import { BaseAIProvider } from './base-provider.js';
 export class ZaiCliProvider extends BaseAIProvider {
 	constructor() {
 		super();
-		this.name = 'Z.AI CLI';
+		this.name = 'Z.AI';
 	}
 
 	/**
