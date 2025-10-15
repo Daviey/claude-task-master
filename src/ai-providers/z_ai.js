@@ -21,9 +21,10 @@ import { BaseAIProvider } from './base-provider.js';
  * - Comprehensive error handling
  */
 export class ZaiProvider extends BaseAIProvider {
-	constructor() {
+	constructor(endpoint = '/api/coding/paas/v4', name = 'Z.ai') {
 		super();
-		this.name = 'Z.AI';
+		this.name = name;
+		this.apiEndpoint = endpoint;
 	}
 
 	/**
@@ -94,7 +95,7 @@ export class ZaiProvider extends BaseAIProvider {
 			this.validateMessages(params.messages);
 
 			const client = this.getClient(params);
-			const endpoint = '/api/coding/paas/v4';
+			const endpoint = this.apiEndpoint;
 
 			const payload = {
 				model: params.modelId,
@@ -139,7 +140,7 @@ export class ZaiProvider extends BaseAIProvider {
 			}
 
 			const client = this.getClient(params);
-			const endpoint = '/api/coding/paas/v4';
+			const endpoint = this.apiEndpoint;
 
 			const payload = {
 				model: params.modelId,
@@ -187,7 +188,7 @@ export class ZaiProvider extends BaseAIProvider {
 			this.validateMessages(params.messages);
 
 			const client = this.getClient(params);
-			const endpoint = '/api/coding/paas/v4';
+			const endpoint = this.apiEndpoint;
 
 			const payload = {
 				model: params.modelId,
@@ -261,5 +262,18 @@ export class ZaiProvider extends BaseAIProvider {
 		} catch (error) {
 			this.handleError('text streaming', error);
 		}
+	}
+}
+
+// Specific provider instances
+export class ZaiCodingProvider extends ZaiProvider {
+	constructor() {
+		super('/api/coding/paas/v4', 'Z.ai Coding Plan');
+	}
+}
+
+export class ZaiApiProvider extends ZaiProvider {
+	constructor() {
+		super('/api/paas/v4', 'Z.ai API');
 	}
 }

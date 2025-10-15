@@ -999,7 +999,45 @@
 			"supported": true
 		}
 	],
-	"zai": [
+	"z-ai-coding": [
+		{
+			"id": "glm-4.6",
+			"name": "GLM-4.6",
+			"swe_score": 0.65,
+			"cost_per_1m_tokens": {
+				"input": 0,
+				"output": 0
+			},
+			"allowed_roles": ["main", "fallback", "research"],
+			"max_tokens": 128000,
+			"supported": true
+		},
+		{
+			"id": "glm-4.5",
+			"name": "GLM-4.5",
+			"swe_score": 0.6,
+			"cost_per_1m_tokens": {
+				"input": 0,
+				"output": 0
+			},
+			"allowed_roles": ["main", "fallback", "research"],
+			"max_tokens": 128000,
+			"supported": true
+		},
+		{
+			"id": "glm-4.5-air",
+			"name": "GLM-4.5-air",
+			"swe_score": 0.55,
+			"cost_per_1m_tokens": {
+				"input": 0,
+				"output": 0
+			},
+			"allowed_roles": ["main", "fallback", "research"],
+			"max_tokens": 128000,
+			"supported": true
+		}
+	],
+	"z-ai-api": [
 		{
 			"id": "glm-4.6",
 			"name": "GLM-4.6",
