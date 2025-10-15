@@ -1031,7 +1031,7 @@
 		{
 			"id": "glm-4.5-air",
 			"name": "GLM-4.5-air",
-			"swe_score": null,
+			"swe_score": 0.576,
 			"cost_per_1m_tokens": {
 				"input": 0.2,
 				"output": 1.1,
@@ -1075,7 +1075,7 @@
 		{
 			"id": "glm-4.5-air",
 			"name": "GLM-4.5-air",
-			"swe_score": null,
+			"swe_score": 0.576,
 			"cost_per_1m_tokens": {
 				"input": 0,
 				"output": 0,
