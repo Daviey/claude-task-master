@@ -46,6 +46,7 @@ describe('ZaiCliProvider', () => {
 			const client = provider.getClient({ apiKey: 'test-api-key' });
 			expect(client).toBeDefined();
 			expect(client.apiKey).toBe('test-api-key');
+			expect(client.baseURL).toBe('https://api.z.ai');
 		});
 
 		it('should create client with custom base URL', () => {
