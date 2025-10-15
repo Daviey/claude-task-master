@@ -30,16 +30,13 @@ describe('ZAiProvider', () => {
 	});
 
 	describe('getEndpointForModel', () => {
-		it('should return coding endpoint for coding models', () => {
-			expect(provider.getEndpointForModel('glm-4.6-coding')).toBe('/api/coding/paas/v4');
-			expect(provider.getEndpointForModel('glm-4.5-coding')).toBe('/api/coding/paas/v4');
-			expect(provider.getEndpointForModel('glm-4.5-air-coding')).toBe('/api/coding/paas/v4');
-		});
-
-		it('should return API endpoint for regular models', () => {
-			expect(provider.getEndpointForModel('glm-4.6')).toBe('/v1/chat/completions');
-			expect(provider.getEndpointForModel('glm-4.5')).toBe('/v1/chat/completions');
-			expect(provider.getEndpointForModel('glm-4.5-air')).toBe('/v1/chat/completions');
+		it('should return same endpoint for all models', () => {
+			expect(provider.getEndpointForModel('glm-4.6-coding')).toBe('/api/paas/v4/chat/completions');
+			expect(provider.getEndpointForModel('glm-4.5-coding')).toBe('/api/paas/v4/chat/completions');
+			expect(provider.getEndpointForModel('glm-4.5-air-coding')).toBe('/api/paas/v4/chat/completions');
+			expect(provider.getEndpointForModel('glm-4.6')).toBe('/api/paas/v4/chat/completions');
+			expect(provider.getEndpointForModel('glm-4.5')).toBe('/api/paas/v4/chat/completions');
+			expect(provider.getEndpointForModel('glm-4.5-air')).toBe('/api/paas/v4/chat/completions');
 		});
 	});
 
@@ -99,7 +96,7 @@ describe('ZAiProvider', () => {
 			});
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				'https://api.z.ai/v1/chat/completions',
+				'https://api.z.ai/api/paas/v4/chat/completions',
 				expect.objectContaining({
 					method: 'POST',
 					headers: expect.objectContaining({
@@ -124,7 +121,7 @@ describe('ZAiProvider', () => {
 			});
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				'https://api.z.ai/v1/chat/completions',
+				'https://api.z.ai/api/paas/v4/chat/completions',
 				expect.any(Object)
 			);
 		});
@@ -139,7 +136,7 @@ describe('ZAiProvider', () => {
 			});
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				'https://api.z.ai/api/coding/paas/v4',
+				'https://api.z.ai/api/paas/v4/chat/completions',
 				expect.any(Object)
 			);
 		});
@@ -216,7 +213,7 @@ describe('ZAiProvider', () => {
 			});
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				'https://api.z.ai/v1/chat/completions',
+				'https://api.z.ai/api/paas/v4/chat/completions',
 				expect.any(Object)
 			);
 		});
@@ -233,7 +230,7 @@ describe('ZAiProvider', () => {
 			});
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				'https://api.z.ai/api/coding/paas/v4',
+				'https://api.z.ai/api/paas/v4/chat/completions',
 				expect.any(Object)
 			);
 		});
@@ -282,7 +279,7 @@ describe('ZAiProvider', () => {
 			});
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				'https://api.z.ai/v1/chat/completions',
+				'https://api.z.ai/api/paas/v4/chat/completions',
 				expect.objectContaining({
 					method: 'POST',
 					headers: expect.objectContaining({
@@ -303,7 +300,7 @@ describe('ZAiProvider', () => {
 			});
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				'https://api.z.ai/api/coding/paas/v4',
+				'https://api.z.ai/api/paas/v4/chat/completions',
 				expect.objectContaining({
 					method: 'POST',
 					headers: expect.objectContaining({

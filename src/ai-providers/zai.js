@@ -2,12 +2,13 @@
  * src/ai-providers/z-ai.js
  *
  * Z.AI provider implementation using HTTP requests to Z.AI API endpoints.
- * This provider supports both Z.AI API and Coding endpoints based on model selection.
+ * This provider supports both Z.AI API and Coding models with automatic endpoint routing.
  *
  * Authentication:
  * - Uses Z_AI_API_KEY environment variable
- * - Supports GLM-4.6, GLM-4.5, GLM-4.5-air models (API endpoint: /v1/chat/completions)
- * - Supports GLM-4.6-coding, GLM-4.5-coding, GLM-4.5-air-coding models (Coding endpoint: /api/coding/paas/v4)
+ * - Supports GLM-4.6, GLM-4.5, GLM-4.5-air models (API variants)
+ * - Supports GLM-4.6-coding, GLM-4.5-coding, GLM-4.5-air-coding models (Coding variants)
+ * - All models use the same endpoint: /api/paas/v4/chat/completions
  */
 
 import { BaseAIProvider } from './base-provider.js';
@@ -16,10 +17,10 @@ import { BaseAIProvider } from './base-provider.js';
  * Provider for Z.AI integration
  *
  * Features:
- * - Supports 'GLM-4.6', 'GLM-4.5', 'GLM-4.5-air' models (API endpoint)
- * - Supports 'GLM-4.6-coding', 'GLM-4.5-coding', 'GLM-4.5-air-coding' models (Coding endpoint)
- * - Uses Z.AI OpenAI-compatible API endpoints
- * - Automatic endpoint selection based on model type
+ * - Supports 'GLM-4.6', 'GLM-4.5', 'GLM-4.5-air' models (API variants)
+ * - Supports 'GLM-4.6-coding', 'GLM-4.5-coding', 'GLM-4.5-air-coding' models (Coding variants)
+ * - Uses Z.AI OpenAI-compatible API endpoint
+ * - Unified endpoint for all model types: /api/paas/v4/chat/completions
  * - Direct HTTP integration with Z.AI API
  * - Comprehensive error handling
  */
@@ -71,12 +72,9 @@ export class ZAiProvider extends BaseAIProvider {
 	 * @returns {string} The API endpoint to use
 	 */
 	getEndpointForModel(modelId) {
-		// Coding models end with -coding suffix
-		if (modelId.endsWith('-coding')) {
-			return '/api/coding/paas/v4';
-		}
-		// Default to general API endpoint for regular models
-		return '/v1/chat/completions';
+		// Both API and Coding models use the same endpoint
+		// The distinction is in the model names, not endpoints
+		return '/api/paas/v4/chat/completions';
 	}
 
 	/**
