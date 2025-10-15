@@ -1,33 +1,30 @@
 /**
- * src/ai-providers/z-ai.js
+ * src/ai-providers/z-ai-api.js
  *
- * Z.AI provider implementation using HTTP requests to Z.AI API endpoints.
- * This provider supports both Z.AI API and Coding models with automatic endpoint routing.
+ * Z.AI API provider implementation for general conversational models.
+ * This provider uses the Z.AI API endpoint for non-coding tasks.
  *
  * Authentication:
  * - Uses Z_AI_API_KEY environment variable
- * - Supports GLM-4.6, GLM-4.5, GLM-4.5-air models (API variants)
- * - Supports GLM-4.6-coding, GLM-4.5-coding, GLM-4.5-air-coding models (Coding variants)
- * - All models use the same endpoint: /api/paas/v4/chat/completions
+ * - Supports GLM-4.6, GLM-4.5, GLM-4.5-air models
+ * - Uses endpoint: /api/paas/v4/chat/completions
  */
 
 import { BaseAIProvider } from './base-provider.js';
 
 /**
- * Provider for Z.AI integration
+ * Provider for Z.AI API integration (general models)
  *
  * Features:
- * - Supports 'GLM-4.6', 'GLM-4.5', 'GLM-4.5-air' models (API variants)
- * - Supports 'GLM-4.6-coding', 'GLM-4.5-coding', 'GLM-4.5-air-coding' models (Coding variants)
+ * - Supports 'GLM-4.6', 'GLM-4.5', 'GLM-4.5-air' models
  * - Uses Z.AI OpenAI-compatible API endpoint
- * - Unified endpoint for all model types: /api/paas/v4/chat/completions
  * - Direct HTTP integration with Z.AI API
  * - Comprehensive error handling
  */
-export class ZAiProvider extends BaseAIProvider {
+export class ZAiApiProvider extends BaseAIProvider {
 	constructor() {
 		super();
-		this.name = 'Z.AI';
+		this.name = 'Z.AI API';
 	}
 
 	/**
@@ -67,17 +64,6 @@ export class ZAiProvider extends BaseAIProvider {
 	}
 
 	/**
-	 * Determine the appropriate endpoint based on model ID
-	 * @param {string} modelId - The model identifier
-	 * @returns {string} The API endpoint to use
-	 */
-	getEndpointForModel(modelId) {
-		// Both API and Coding models use the same endpoint
-		// The distinction is in the model names, not endpoints
-		return '/api/paas/v4/chat/completions';
-	}
-
-	/**
 	 * Make HTTP request to Z.AI API
 	 */
 	async request(client, endpoint, payload) {
@@ -109,7 +95,7 @@ export class ZAiProvider extends BaseAIProvider {
 			this.validateMessages(params.messages);
 
 			const client = this.getClient(params);
-			const endpoint = this.getEndpointForModel(params.modelId);
+			const endpoint = '/api/paas/v4/chat/completions';
 
 			const payload = {
 				model: params.modelId,
@@ -154,7 +140,7 @@ export class ZAiProvider extends BaseAIProvider {
 			}
 
 			const client = this.getClient(params);
-			const endpoint = this.getEndpointForModel(params.modelId);
+			const endpoint = '/api/paas/v4/chat/completions';
 
 			const payload = {
 				model: params.modelId,
@@ -202,7 +188,7 @@ export class ZAiProvider extends BaseAIProvider {
 			this.validateMessages(params.messages);
 
 			const client = this.getClient(params);
-			const endpoint = this.getEndpointForModel(params.modelId);
+			const endpoint = '/api/paas/v4/chat/completions';
 
 			const payload = {
 				model: params.modelId,

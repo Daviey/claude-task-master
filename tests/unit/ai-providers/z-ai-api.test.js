@@ -1,20 +1,20 @@
 /**
- * tests/unit/ai-providers/zai.test.js
- * Unit tests for Z.AI provider
+ * tests/unit/ai-providers/z-ai-api.test.js
+ * Unit tests for Z.AI API provider
  */
 
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import { ZAiProvider } from '../../../src/ai-providers/zai.js';
+import { ZAiApiProvider } from '../../../src/ai-providers/z-ai-api.js';
 
 // Mock fetch for testing
 global.fetch = jest.fn();
 
-describe('ZAiProvider', () => {
+describe('ZAiApiProvider', () => {
 	let provider;
 	let mockFetch;
 
 	beforeEach(() => {
-		provider = new ZAiProvider();
+		provider = new ZAiApiProvider();
 		mockFetch = global.fetch;
 		mockFetch.mockClear();
 	});
@@ -25,18 +25,7 @@ describe('ZAiProvider', () => {
 
 	describe('constructor', () => {
 		it('should create a provider with correct name', () => {
-			expect(provider.name).toBe('Z.AI');
-		});
-	});
-
-	describe('getEndpointForModel', () => {
-		it('should return same endpoint for all models', () => {
-			expect(provider.getEndpointForModel('glm-4.6-coding')).toBe('/api/paas/v4/chat/completions');
-			expect(provider.getEndpointForModel('glm-4.5-coding')).toBe('/api/paas/v4/chat/completions');
-			expect(provider.getEndpointForModel('glm-4.5-air-coding')).toBe('/api/paas/v4/chat/completions');
-			expect(provider.getEndpointForModel('glm-4.6')).toBe('/api/paas/v4/chat/completions');
-			expect(provider.getEndpointForModel('glm-4.5')).toBe('/api/paas/v4/chat/completions');
-			expect(provider.getEndpointForModel('glm-4.5-air')).toBe('/api/paas/v4/chat/completions');
+			expect(provider.name).toBe('Z.AI API');
 		});
 	});
 
@@ -111,36 +100,6 @@ describe('ZAiProvider', () => {
 			expect(result.usage.outputTokens).toBe(15);
 		});
 
-		it('should use Z.AI API endpoint for regular models', async () => {
-			mockFetch.mockResolvedValue(mockResponse);
-
-			await provider.generateText({
-				apiKey: 'test-key',
-				modelId: 'glm-4.6',
-				messages: [{ role: 'user', content: 'Write code' }]
-			});
-
-			expect(mockFetch).toHaveBeenCalledWith(
-				'https://api.z.ai/api/paas/v4/chat/completions',
-				expect.any(Object)
-			);
-		});
-
-		it('should use Z.AI Coding endpoint for coding models', async () => {
-			mockFetch.mockResolvedValue(mockResponse);
-
-			await provider.generateText({
-				apiKey: 'test-key',
-				modelId: 'glm-4.6-coding',
-				messages: [{ role: 'user', content: 'Write code' }]
-			});
-
-			expect(mockFetch).toHaveBeenCalledWith(
-				'https://api.z.ai/api/paas/v4/chat/completions',
-				expect.any(Object)
-			);
-		});
-
 		it('should handle API errors', async () => {
 			mockFetch.mockResolvedValue({
 				ok: false,
@@ -150,7 +109,7 @@ describe('ZAiProvider', () => {
 
 			await expect(provider.generateText({
 				apiKey: 'invalid-key',
-				modelId: 'GLM-4.6',
+				modelId: 'glm-4.6',
 				messages: [{ role: 'user', content: 'Hello' }]
 			})).rejects.toThrow('Z.AI API error (401): Unauthorized');
 		});
@@ -176,7 +135,7 @@ describe('ZAiProvider', () => {
 
 			const result = await provider.generateObject({
 				apiKey: 'test-key',
-				modelId: 'GLM-4.6',
+				modelId: 'glm-4.6',
 				messages: [{ role: 'user', content: 'Create object' }],
 				schema: { type: 'object', properties: { name: { type: 'string' } } },
 				objectName: 'TestObject'
@@ -201,40 +160,6 @@ describe('ZAiProvider', () => {
 			expect(requestBody.response_format).toEqual({ type: 'json_object' });
 		});
 
-		it('should use API endpoint for regular models in object generation', async () => {
-			mockFetch.mockResolvedValue(mockResponse);
-
-			await provider.generateObject({
-				apiKey: 'test-key',
-				modelId: 'glm-4.5',
-				messages: [{ role: 'user', content: 'Create object' }],
-				schema: { type: 'object' },
-				objectName: 'TestObject'
-			});
-
-			expect(mockFetch).toHaveBeenCalledWith(
-				'https://api.z.ai/api/paas/v4/chat/completions',
-				expect.any(Object)
-			);
-		});
-
-		it('should use Coding endpoint for coding models in object generation', async () => {
-			mockFetch.mockResolvedValue(mockResponse);
-
-			await provider.generateObject({
-				apiKey: 'test-key',
-				modelId: 'glm-4.5-coding',
-				messages: [{ role: 'user', content: 'Create object' }],
-				schema: { type: 'object' },
-				objectName: 'TestObject'
-			});
-
-			expect(mockFetch).toHaveBeenCalledWith(
-				'https://api.z.ai/api/paas/v4/chat/completions',
-				expect.any(Object)
-			);
-		});
-
 		it('should handle invalid JSON response', async () => {
 			mockFetch.mockResolvedValue({
 				ok: true,
@@ -247,7 +172,7 @@ describe('ZAiProvider', () => {
 
 			await expect(provider.generateObject({
 				apiKey: 'test-key',
-				modelId: 'GLM-4.6',
+				modelId: 'glm-4.6',
 				messages: [{ role: 'user', content: 'Create object' }],
 				schema: { type: 'object' },
 				objectName: 'TestObject'
@@ -269,34 +194,13 @@ describe('ZAiProvider', () => {
 			}
 		};
 
-		it('should use API endpoint for regular models in streaming', async () => {
+		it('should stream text successfully', async () => {
 			mockFetch.mockResolvedValue(mockStreamResponse);
 
 			const result = await provider.streamText({
 				apiKey: 'test-key',
 				modelId: 'glm-4.6',
 				messages: [{ role: 'user', content: 'Stream text' }]
-			});
-
-			expect(mockFetch).toHaveBeenCalledWith(
-				'https://api.z.ai/api/paas/v4/chat/completions',
-				expect.objectContaining({
-					method: 'POST',
-					headers: expect.objectContaining({
-						'Authorization': 'Bearer test-key'
-					})
-				})
-			);
-			expect(result.textStream).toBeDefined();
-		});
-
-		it('should use Coding endpoint for coding models in streaming', async () => {
-			mockFetch.mockResolvedValue(mockStreamResponse);
-
-			const result = await provider.streamText({
-				apiKey: 'test-key',
-				modelId: 'glm-4.6-coding',
-				messages: [{ role: 'user', content: 'Stream code' }]
 			});
 
 			expect(mockFetch).toHaveBeenCalledWith(
@@ -317,7 +221,7 @@ describe('ZAiProvider', () => {
 			await expect(provider.generateText({
 				modelId: 'glm-4.6',
 				messages: [{ role: 'user', content: 'Hello' }]
-			})).rejects.toThrow('Z.AI API key is required');
+			})).rejects.toThrow('Z.AI API API error during text generation: Z.AI API API key is required');
 		});
 
 		it('should require modelId in generateText', async () => {
