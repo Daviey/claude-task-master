@@ -3553,7 +3553,7 @@ ${result.result}
 			'--codex-cli',
 			'Allow setting a Codex CLI model ID (use with --set-*)'
 		)
-		.addHelpText(
+				.addHelpText(
 			'after',
 			`
 Examples:
