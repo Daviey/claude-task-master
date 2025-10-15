@@ -18,4 +18,5 @@ export { ClaudeCodeProvider } from './claude-code.js';
 export { GeminiCliProvider } from './gemini-cli.js';
 export { GrokCliProvider } from './grok-cli.js';
 export { CodexCliProvider } from './codex-cli.js';
-export { ZaiProvider, ZAiCodingProvider, ZAiApiProvider } from './z_ai.js';
+export { ZaiProvider, ZAiApiProvider } from './z-ai-api.js';
+export { ZAiCodingProvider } from './z-ai-coding.js';

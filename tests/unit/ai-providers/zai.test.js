@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import { ZaiProvider } from '../../../src/ai-providers/z_ai.js';
+import { ZaiProvider } from '../../../src/ai-providers/z-ai-api.js';
 
 // Mock fetch for testing
 global.fetch = jest.fn();

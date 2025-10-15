@@ -1,7 +1,13 @@
 /**
  * src/ai-providers/z-ai-coding.js
  *
- * Re-export of the Z.AI Coding provider implementation.
+ * Z.AI Coding provider implementation for coding-focused models.
  */
 
-export { ZAiCodingProvider } from './z_ai.js';
+import { ZaiProvider } from './z-ai-api.js';
+
+export class ZAiCodingProvider extends ZaiProvider {
+	constructor() {
+		super('/api/coding/paas/v4/chat/completions', 'Z.AI Coding');
+	}
+}
