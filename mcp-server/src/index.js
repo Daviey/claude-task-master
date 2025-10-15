@@ -7,7 +7,6 @@ import logger from './logger.js';
 import { registerTaskMasterTools } from './tools/index.js';
 import ProviderRegistry from '../../src/provider-registry/index.js';
 import { MCPProvider } from './providers/mcp-provider.js';
-import packageJson from '../../package.json' with { type: 'json' };
 
 // Load environment variables
 dotenv.config();
@@ -23,7 +22,7 @@ class TaskMasterMCPServer {
 	constructor() {
 		this.options = {
 			name: 'Task Master MCP Server',
-			version: packageJson.version
+			version: process.env.TM_PUBLIC_VERSION || 'unknown'
 		};
 
 		this.server = new FastMCP(this.options);

@@ -8,7 +8,6 @@ import path from 'path';
 import fs from 'fs';
 import { contextManager } from '../core/context-manager.js'; // Import the singleton
 import { fileURLToPath } from 'url';
-import packageJson from '../../../package.json' with { type: 'json' };
 import { getCurrentTag } from '../../../scripts/modules/utils.js';
 
 // Import path utilities to ensure consistent path resolution
@@ -23,7 +22,7 @@ const __filename = fileURLToPath(import.meta.url);
 let cachedVersionInfo = null;
 
 /**
- * Get version information from package.json
+ * Get version information from build-time environment variable
  * @returns {Object} Version information
  */
 function getVersionInfo() {
@@ -32,10 +31,10 @@ function getVersionInfo() {
 		return cachedVersionInfo;
 	}
 
-	// Use the imported packageJson directly
+	// Use build-time injected version or fallback
 	cachedVersionInfo = {
-		version: packageJson.version || 'unknown',
-		name: packageJson.name || 'task-master-ai'
+		version: process.env.TM_PUBLIC_VERSION || '0.29.0',
+		name: 'task-master-ai'
 	};
 	return cachedVersionInfo;
 }

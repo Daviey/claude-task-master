@@ -17,7 +17,6 @@ import { CredentialStore } from './credential-store.js';
 import { SupabaseAuthClient } from '../clients/supabase-client.js';
 import { getAuthConfig } from './config.js';
 import { getLogger } from '../logger/index.js';
-import packageJson from '../../../../package.json' with { type: 'json' };
 
 export class OAuthService {
 	private logger = getLogger('OAuthService');
@@ -388,10 +387,10 @@ export class OAuthService {
 	}
 
 	/**
-	 * Get CLI version from package.json if available
+	 * Get CLI version from build-time environment variable
 	 */
 	private getCliVersion(): string {
-		return packageJson.version || 'unknown';
+		return process.env.TM_PUBLIC_VERSION || 'unknown';
 	}
 
 	/**
