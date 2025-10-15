@@ -1,20 +1,20 @@
 /**
- * tests/unit/ai-providers/zai-cli.test.js
- * Unit tests for Z.AI CLI provider
+ * tests/unit/ai-providers/zai.test.js
+ * Unit tests for Z.AI provider
  */
 
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import { ZaiCliProvider } from '../../../src/ai-providers/zai-cli.js';
+import { ZaiProvider } from '../../../src/ai-providers/zai.js';
 
 // Mock fetch for testing
 global.fetch = jest.fn();
 
-describe('ZaiCliProvider', () => {
+describe('ZaiProvider', () => {
 	let provider;
 	let mockFetch;
 
 	beforeEach(() => {
-		provider = new ZaiCliProvider();
+		provider = new ZaiProvider();
 		mockFetch = global.fetch;
 		mockFetch.mockClear();
 	});
@@ -25,7 +25,7 @@ describe('ZaiCliProvider', () => {
 
 	describe('constructor', () => {
 		it('should create a provider with correct name', () => {
-			expect(provider.name).toBe('Z.AI CLI');
+			expect(provider.name).toBe('Z.AI');
 		});
 	});
 
