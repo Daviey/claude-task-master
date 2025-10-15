@@ -20,7 +20,7 @@ import { BaseAIProvider } from './base-provider.js';
  * - Direct HTTP integration with Z.AI API
  * - Comprehensive error handling
  */
-export class ZaiCliProvider extends BaseAIProvider {
+export class ZaiProvider extends BaseAIProvider {
 	constructor() {
 		super();
 		this.name = 'Z.AI';

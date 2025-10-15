@@ -999,7 +999,7 @@
 			"supported": true
 		}
 	],
-	"zai-cli": [
+	"zai": [
 		{
 			"id": "glm-4.6",
 			"name": "GLM-4.6",

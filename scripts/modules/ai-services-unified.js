@@ -52,7 +52,7 @@ import {
 	PerplexityAIProvider,
 	VertexAIProvider,
 	XAIProvider,
-	ZaiCliProvider
+	ZaiProvider
 } from '../../src/ai-providers/index.js';
 
 // Import the provider registry
@@ -75,7 +75,7 @@ const PROVIDERS = {
 	'codex-cli': new CodexCliProvider(),
 	'gemini-cli': new GeminiCliProvider(),
 	'grok-cli': new GrokCliProvider(),
-	'zai-cli': new ZaiCliProvider()
+	'zai': new ZaiProvider()
 };
 
 function _getProvider(providerName) {
