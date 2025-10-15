@@ -1003,7 +1003,7 @@
 		{
 			"id": "glm-4.6",
 			"name": "GLM-4.6",
-			"swe_score": 0.72,
+			"swe_score": 0.68,
 			"cost_per_1m_tokens": {
 				"input": 0.6,
 				"output": 2.2,
@@ -1017,7 +1017,7 @@
 		{
 			"id": "glm-4.5",
 			"name": "GLM-4.5",
-			"swe_score": 0.68,
+			"swe_score": 0.642,
 			"cost_per_1m_tokens": {
 				"input": 0.6,
 				"output": 2.2,
@@ -1031,7 +1031,7 @@
 		{
 			"id": "glm-4.5-air",
 			"name": "GLM-4.5-air",
-			"swe_score": 0.62,
+			"swe_score": null,
 			"cost_per_1m_tokens": {
 				"input": 0.2,
 				"output": 1.1,
@@ -1047,7 +1047,7 @@
 		{
 			"id": "glm-4.6",
 			"name": "GLM-4.6",
-			"swe_score": 0.75,
+			"swe_score": 0.68,
 			"cost_per_1m_tokens": {
 				"input": 0,
 				"output": 0,
@@ -1061,7 +1061,7 @@
 		{
 			"id": "glm-4.5",
 			"name": "GLM-4.5",
-			"swe_score": 0.71,
+			"swe_score": 0.642,
 			"cost_per_1m_tokens": {
 				"input": 0,
 				"output": 0,
@@ -1075,7 +1075,7 @@
 		{
 			"id": "glm-4.5-air",
 			"name": "GLM-4.5-air",
-			"swe_score": 0.65,
+			"swe_score": null,
 			"cost_per_1m_tokens": {
 				"input": 0,
 				"output": 0,
