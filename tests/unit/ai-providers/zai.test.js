@@ -4,17 +4,17 @@
  */
 
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
-import { ZaiProvider } from '../../../src/ai-providers/zai.js';
+import { ZAiProvider } from '../../../src/ai-providers/zai.js';
 
 // Mock fetch for testing
 global.fetch = jest.fn();
 
-describe('ZaiProvider', () => {
+describe('ZAiProvider', () => {
 	let provider;
 	let mockFetch;
 
 	beforeEach(() => {
-		provider = new ZaiProvider();
+		provider = new ZAiProvider();
 		mockFetch = global.fetch;
 		mockFetch.mockClear();
 	});
@@ -29,9 +29,23 @@ describe('ZaiProvider', () => {
 		});
 	});
 
+	describe('getEndpointForModel', () => {
+		it('should return coding endpoint for coding models', () => {
+			expect(provider.getEndpointForModel('glm-4.6-coding')).toBe('/api/coding/paas/v4');
+			expect(provider.getEndpointForModel('glm-4.5-coding')).toBe('/api/coding/paas/v4');
+			expect(provider.getEndpointForModel('glm-4.5-air-coding')).toBe('/api/coding/paas/v4');
+		});
+
+		it('should return API endpoint for regular models', () => {
+			expect(provider.getEndpointForModel('glm-4.6')).toBe('/v1/chat/completions');
+			expect(provider.getEndpointForModel('glm-4.5')).toBe('/v1/chat/completions');
+			expect(provider.getEndpointForModel('glm-4.5-air')).toBe('/v1/chat/completions');
+		});
+	});
+
 	describe('getRequiredApiKeyName', () => {
-		it('should return ZAI_API_KEY', () => {
-			expect(provider.getRequiredApiKeyName()).toBe('ZAI_API_KEY');
+		it('should return Z_AI_API_KEY', () => {
+			expect(provider.getRequiredApiKeyName()).toBe('Z_AI_API_KEY');
 		});
 	});
 
@@ -78,20 +92,20 @@ describe('ZaiProvider', () => {
 
 			const result = await provider.generateText({
 				apiKey: 'test-key',
-				modelId: 'GLM-4.6',
+				modelId: 'glm-4.6',
 				messages: [{ role: 'user', content: 'Hello' }],
 				temperature: 0.7,
 				maxTokens: 100
 			});
 
 			expect(mockFetch).toHaveBeenCalledWith(
-				'https://api.z.ai/api/coding/paas/v4',
+				'https://api.z.ai/v1/chat/completions',
 				expect.objectContaining({
 					method: 'POST',
 					headers: expect.objectContaining({
 						'Authorization': 'Bearer test-key'
 					}),
-					body: expect.stringContaining('"model":"GLM-4.6"')
+					body: expect.stringContaining('"model":"glm-4.6"')
 				})
 			);
 
@@ -100,12 +114,27 @@ describe('ZaiProvider', () => {
 			expect(result.usage.outputTokens).toBe(15);
 		});
 
-		it('should use Z.AI API endpoint for any model', async () => {
+		it('should use Z.AI API endpoint for regular models', async () => {
 			mockFetch.mockResolvedValue(mockResponse);
 
 			await provider.generateText({
 				apiKey: 'test-key',
-				modelId: 'GLM-4.6',
+				modelId: 'glm-4.6',
+				messages: [{ role: 'user', content: 'Write code' }]
+			});
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				'https://api.z.ai/v1/chat/completions',
+				expect.any(Object)
+			);
+		});
+
+		it('should use Z.AI Coding endpoint for coding models', async () => {
+			mockFetch.mockResolvedValue(mockResponse);
+
+			await provider.generateText({
+				apiKey: 'test-key',
+				modelId: 'glm-4.6-coding',
 				messages: [{ role: 'user', content: 'Write code' }]
 			});
 
@@ -165,7 +194,7 @@ describe('ZaiProvider', () => {
 
 			await provider.generateObject({
 				apiKey: 'test-key',
-				modelId: 'GLM-4.6',
+				modelId: 'glm-4.6',
 				messages: [{ role: 'user', content: 'Create object' }],
 				schema: { type: 'object' },
 				objectName: 'TestObject'
@@ -173,6 +202,40 @@ describe('ZaiProvider', () => {
 
 			const requestBody = JSON.parse(mockFetch.mock.calls[0][1].body);
 			expect(requestBody.response_format).toEqual({ type: 'json_object' });
+		});
+
+		it('should use API endpoint for regular models in object generation', async () => {
+			mockFetch.mockResolvedValue(mockResponse);
+
+			await provider.generateObject({
+				apiKey: 'test-key',
+				modelId: 'glm-4.5',
+				messages: [{ role: 'user', content: 'Create object' }],
+				schema: { type: 'object' },
+				objectName: 'TestObject'
+			});
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				'https://api.z.ai/v1/chat/completions',
+				expect.any(Object)
+			);
+		});
+
+		it('should use Coding endpoint for coding models in object generation', async () => {
+			mockFetch.mockResolvedValue(mockResponse);
+
+			await provider.generateObject({
+				apiKey: 'test-key',
+				modelId: 'glm-4.5-coding',
+				messages: [{ role: 'user', content: 'Create object' }],
+				schema: { type: 'object' },
+				objectName: 'TestObject'
+			});
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				'https://api.z.ai/api/coding/paas/v4',
+				expect.any(Object)
+			);
 		});
 
 		it('should handle invalid JSON response', async () => {
@@ -195,10 +258,67 @@ describe('ZaiProvider', () => {
 		});
 	});
 
+	describe('streamText', () => {
+		const mockStreamResponse = {
+			ok: true,
+			body: {
+				getReader: () => ({
+					read: async () => ({
+						done: true,
+						value: new TextEncoder().encode('data: {"choices":[{"delta":{"content":"test"}}]}\n\n')
+					}),
+					releaseLock: () => {}
+				})
+			}
+		};
+
+		it('should use API endpoint for regular models in streaming', async () => {
+			mockFetch.mockResolvedValue(mockStreamResponse);
+
+			const result = await provider.streamText({
+				apiKey: 'test-key',
+				modelId: 'glm-4.6',
+				messages: [{ role: 'user', content: 'Stream text' }]
+			});
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				'https://api.z.ai/v1/chat/completions',
+				expect.objectContaining({
+					method: 'POST',
+					headers: expect.objectContaining({
+						'Authorization': 'Bearer test-key'
+					})
+				})
+			);
+			expect(result.textStream).toBeDefined();
+		});
+
+		it('should use Coding endpoint for coding models in streaming', async () => {
+			mockFetch.mockResolvedValue(mockStreamResponse);
+
+			const result = await provider.streamText({
+				apiKey: 'test-key',
+				modelId: 'glm-4.6-coding',
+				messages: [{ role: 'user', content: 'Stream code' }]
+			});
+
+			expect(mockFetch).toHaveBeenCalledWith(
+				'https://api.z.ai/api/coding/paas/v4',
+				expect.objectContaining({
+					method: 'POST',
+					headers: expect.objectContaining({
+						'Authorization': 'Bearer test-key'
+					})
+				})
+			);
+			expect(result.textStream).toBeDefined();
+		});
+	});
+
 	describe('validation', () => {
 		it('should require API key in generateText', async () => {
 			await expect(provider.generateText({
-				modelId: 'GLM-4.6',
+				modelId: 'glm-4.6',
 				messages: [{ role: 'user', content: 'Hello' }]
 			})).rejects.toThrow('Z.AI API key is required');
 		});
@@ -213,7 +333,7 @@ describe('ZaiProvider', () => {
 		it('should require messages in generateText', async () => {
 			await expect(provider.generateText({
 				apiKey: 'test-key',
-				modelId: 'zai-api'
+				modelId: 'glm-4.6'
 			})).rejects.toThrow('Invalid or empty messages array provided');
 		});
 	});

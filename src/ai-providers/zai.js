@@ -1,12 +1,13 @@
 /**
- * src/ai-providers/zai-cli.js
+ * src/ai-providers/z-ai.js
  *
- * Z.AI provider implementation using HTTP requests to Z.AI API endpoint.
- * This provider uses the Z.AI OpenAI-compatible API endpoint.
+ * Z.AI provider implementation using HTTP requests to Z.AI API endpoints.
+ * This provider supports both Z.AI API and Coding endpoints based on model selection.
  *
  * Authentication:
- * - Uses ZAI_API_KEY environment variable
- * - Supports GLM-4.6, GLM-4.5, GLM-4.5-air models
+ * - Uses Z_AI_API_KEY environment variable
+ * - Supports GLM-4.6, GLM-4.5, GLM-4.5-air models (API endpoint: /v1/chat/completions)
+ * - Supports GLM-4.6-coding, GLM-4.5-coding, GLM-4.5-air-coding models (Coding endpoint: /api/coding/paas/v4)
  */
 
 import { BaseAIProvider } from './base-provider.js';
@@ -15,12 +16,14 @@ import { BaseAIProvider } from './base-provider.js';
  * Provider for Z.AI integration
  *
  * Features:
- * - Supports 'GLM-4.6', 'GLM-4.5', 'GLM-4.5-air' models
- * - Uses Z.AI OpenAI-compatible API endpoint
+ * - Supports 'GLM-4.6', 'GLM-4.5', 'GLM-4.5-air' models (API endpoint)
+ * - Supports 'GLM-4.6-coding', 'GLM-4.5-coding', 'GLM-4.5-air-coding' models (Coding endpoint)
+ * - Uses Z.AI OpenAI-compatible API endpoints
+ * - Automatic endpoint selection based on model type
  * - Direct HTTP integration with Z.AI API
  * - Comprehensive error handling
  */
-export class ZaiProvider extends BaseAIProvider {
+export class ZAiProvider extends BaseAIProvider {
 	constructor() {
 		super();
 		this.name = 'Z.AI';
@@ -31,7 +34,7 @@ export class ZaiProvider extends BaseAIProvider {
 	 * @returns {string} The environment variable name for the Z.AI API key
 	 */
 	getRequiredApiKeyName() {
-		return 'ZAI_API_KEY';
+		return 'Z_AI_API_KEY';
 	}
 
 	/**
@@ -60,6 +63,20 @@ export class ZaiProvider extends BaseAIProvider {
 		} catch (error) {
 			this.handleError('client initialization', error);
 		}
+	}
+
+	/**
+	 * Determine the appropriate endpoint based on model ID
+	 * @param {string} modelId - The model identifier
+	 * @returns {string} The API endpoint to use
+	 */
+	getEndpointForModel(modelId) {
+		// Coding models end with -coding suffix
+		if (modelId.endsWith('-coding')) {
+			return '/api/coding/paas/v4';
+		}
+		// Default to general API endpoint for regular models
+		return '/v1/chat/completions';
 	}
 
 	/**
@@ -94,7 +111,7 @@ export class ZaiProvider extends BaseAIProvider {
 			this.validateMessages(params.messages);
 
 			const client = this.getClient(params);
-			const endpoint = '/api/coding/paas/v4';
+			const endpoint = this.getEndpointForModel(params.modelId);
 
 			const payload = {
 				model: params.modelId,
@@ -139,7 +156,7 @@ export class ZaiProvider extends BaseAIProvider {
 			}
 
 			const client = this.getClient(params);
-			const endpoint = '/api/coding/paas/v4';
+			const endpoint = this.getEndpointForModel(params.modelId);
 
 			const payload = {
 				model: params.modelId,
@@ -187,7 +204,7 @@ export class ZaiProvider extends BaseAIProvider {
 			this.validateMessages(params.messages);
 
 			const client = this.getClient(params);
-			const endpoint = '/api/coding/paas/v4';
+			const endpoint = this.getEndpointForModel(params.modelId);
 
 			const payload = {
 				model: params.modelId,
